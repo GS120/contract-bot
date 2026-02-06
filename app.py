@@ -2,7 +2,7 @@ import streamlit as st
 
 st.title("Contract Analysis & Risk Bot")
 
-uploaded_file = st.file_uploader("Upload a contract file", type=["txt", "pdf", "docx"])
+uploaded_file = st.file_uploader("Upload a contract file", type=["txt"])
 
 if uploaded_file:
     st.success("File uploaded successfully!")
