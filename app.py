@@ -3,14 +3,12 @@ import PyPDF2
 import docx
 
 # -----------------------------
-# Function to extract text from uploaded file
+# Extract text from uploaded file
 # -----------------------------
 def extract_text(file):
-    # TXT file
     if file.name.endswith(".txt"):
         return file.read().decode("utf-8")
 
-    # PDF file
     elif file.name.endswith(".pdf"):
         reader = PyPDF2.PdfReader(file)
         text = ""
@@ -19,7 +17,6 @@ def extract_text(file):
                 text += page.extract_text()
         return text
 
-    # DOCX file
     elif file.name.endswith(".docx"):
         document = docx.Document(file)
         text = ""
@@ -31,13 +28,24 @@ def extract_text(file):
 
 
 # -----------------------------
+# Simple AI-style Summary Generator
+# -----------------------------
+def generate_summary(text):
+    lines = text.split("\n")
+    clean_lines = [l.strip() for l in lines if len(l.strip()) > 20]
+
+    summary = clean_lines[:5]  # first 5 meaningful lines
+    return summary
+
+
+# -----------------------------
 # Streamlit App UI
 # -----------------------------
-st.title("📑 Contract Analysis & Risk Bot")
-st.write("Upload a contract file and get risk analysis instantly.")
+st.title("📑 AI Contract Risk Assessment Bot")
+st.write("Upload a contract file and get summary + risk analysis instantly.")
 
 uploaded_file = st.file_uploader(
-    "Upload a contract file",
+    "Upload Contract File",
     type=["txt", "pdf", "docx"]
 )
 
@@ -47,19 +55,5 @@ uploaded_file = st.file_uploader(
 if uploaded_file:
     st.success("✅ File uploaded successfully!")
 
-    # Extract content
-    content = extract_text(uploaded_file)
-
-    # Show contract text
-    st.subheader("📄 Contract Content")
-    st.text_area("Contract Text", content, height=250)
-
-    # Risk keywords
-    issues = []
-    recommendations = []
-    score = 0
-
-    # Clause Detection
-    if "penalty" in content.lower():
-        issues.append("⚠️ Penalty clause found")
-        recommendations.append("✔ Review penalty terms carefully.")
+    # Extract contract content
+    content = extract
