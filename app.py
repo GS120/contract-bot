@@ -1,59 +1,59 @@
 import streamlit as st
-import PyPDF2
-import docx
 
-# -----------------------------
-# Extract text from uploaded file
-# -----------------------------
-def extract_text(file):
-    if file.name.endswith(".txt"):
-        return file.read().decode("utf-8")
+# Title
+st.title("Contract Analysis & Risk Bot")
 
-    elif file.name.endswith(".pdf"):
-        reader = PyPDF2.PdfReader(file)
-        text = ""
-        for page in reader.pages:
-            if page.extract_text():
-                text += page.extract_text()
-        return text
-
-    elif file.name.endswith(".docx"):
-        document = docx.Document(file)
-        text = ""
-        for para in document.paragraphs:
-            text += para.text + "\n"
-        return text
-
-    return ""
-
-
-# -----------------------------
-# Simple AI-style Summary Generator
-# -----------------------------
-def generate_summary(text):
-    lines = text.split("\n")
-    clean_lines = [l.strip() for l in lines if len(l.strip()) > 20]
-
-    summary = clean_lines[:5]  # first 5 meaningful lines
-    return summary
-
-
-# -----------------------------
-# Streamlit App UI
-# -----------------------------
-st.title("📑 AI Contract Risk Assessment Bot")
-st.write("Upload a contract file and get summary + risk analysis instantly.")
-
+# Upload File
 uploaded_file = st.file_uploader(
-    "Upload Contract File",
+    "Upload a contract file",
     type=["txt", "pdf", "docx"]
 )
 
-# -----------------------------
-# Main Logic
-# -----------------------------
 if uploaded_file:
-    st.success("✅ File uploaded successfully!")
 
-    # Extract contract content
-    content = extract
+    st.success("File uploaded successfully!")
+
+    # Read TXT File
+    if uploaded_file.name.endswith(".txt"):
+        content = uploaded_file.read().decode("utf-8")
+
+    # PDF File Placeholder
+    elif uploaded_file.name.endswith(".pdf"):
+        content = "PDF support will be added soon."
+
+    # DOCX File Placeholder
+    elif uploaded_file.name.endswith(".docx"):
+        content = "DOCX support will be added soon."
+
+    # Display Contract Content
+    st.subheader("Contract Content")
+    st.text_area("Text inside contract:", content, height=300)
+
+    # Risk Detection
+    st.subheader("Contract Risk Analysis")
+
+    risk_score = 0
+
+    if "penalty" in content.lower():
+        st.warning("⚠️ Penalty clause found")
+        risk_score += 3
+
+    if "liable" in content.lower() or "liability" in content.lower():
+        st.warning("⚠️ Liability limitation found")
+        risk_score += 2
+
+    if "terminate" in content.lower():
+        st.warning("⚠️ Termination clause found")
+        risk_score += 2
+
+    # Final Risk Result
+    st.subheader("Final Risk Level")
+
+    if risk_score >= 6:
+        st.error("🔴 HIGH RISK Contract")
+    elif risk_score >= 3:
+        st.warning("🟠 MEDIUM RISK Contract")
+    else:
+        st.success("🟢 LOW RISK Contract")
+
+    st.write("Risk Score =", risk_score)
