@@ -57,3 +57,26 @@ if uploaded_file:
         st.success("🟢 LOW RISK Contract")
 
     st.write("Risk Score =", risk_score)
+# -----------------------------
+# Download Report Button
+# -----------------------------
+report_text = f"""
+Contract Risk Report
+---------------------
+
+Risk Score: {score}
+Risk Level: {level}
+
+Issues Found:
+{chr(10).join(issues)}
+
+Recommendations:
+{chr(10).join(recommendations)}
+"""
+
+st.download_button(
+    label="📥 Download Risk Report",
+    data=report_text,
+    file_name="contract_risk_report.txt",
+    mime="text/plain"
+)
